@@ -15,6 +15,14 @@
 
 const Route = use('Route')
 
-Route.get('/', ({ request }) => {
-  return { greeting: 'Hello world in JSON' }
+Route.get('/healthcheck', ({ request }) => {
+  return { status: 'App is working' }
 })
+
+Route.group(() => {
+  Route.get('users', 'UserController.index')
+  Route.post('users', 'UserController.store')
+  Route.get('users/:id', 'UserController.show')
+  Route.delete('users/:id', 'UserController.delete')
+})
+
