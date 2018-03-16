@@ -1,5 +1,3 @@
-'use strict'
-
 const User = use('App/Models/User')
 
 const uuidv4 = require('uuid/v4')
@@ -12,9 +10,9 @@ class UserController {
   }
 
   async store ({ request, response }) {
-    const payload = request.only(['email', 'password'])
+    const { email, password } = request.all()
     const user = new User()
-    user.merge({ ...payload, id: uuidv4() })
+    user.merge({ email, password, id: uuidv4() })
     await user.save()
 
     return response.status(201).json(user)

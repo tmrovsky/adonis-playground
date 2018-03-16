@@ -19,6 +19,8 @@ Route.get('/healthcheck', ({ request }) => {
   return { status: 'App is working' }
 })
 
+Route.post('auth', 'AuthController.login')
+
 Route.group(() => {
   Route.get('users', 'UserController.index')
   Route.post('users', 'UserController.store')
