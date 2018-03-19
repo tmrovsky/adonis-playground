@@ -2,15 +2,12 @@ const chai = require('chai')
 const uuidv4 = require('uuid/v4')
 const { expect } = chai
 
-const Factory = use('Factory')
-const Hash = use('Hash')
 const User = use('App/Models/User')
 
 const { test, trait, before, after } = use('Test/Suite')('Auth')
 
 trait('Test/ApiClient')
 trait('Auth/Client')
-trait('DatabaseTransactions')
 
 let user
 
@@ -30,7 +27,7 @@ after(async () => {
 
 test('login', async ({ client }) => {
   const response = await client
-    .post('auth')
+    .post('/auth')
     .send({ email: 'test@desmart.com', password: 'some-super-fancy-password' })
     .end()
 
@@ -48,13 +45,3 @@ test('login | reject user not found', async ({ client }) => {
 
   response.assertStatus(401)
 })
-
-test('login | reject wrong password', async ({ client }) => {
-  const response = await client
-    .post('auth')
-    .send({ email: 'test@desmart.com', password: 'some-password' })
-    .end()
-
-  response.assertStatus(401)
-})
-
