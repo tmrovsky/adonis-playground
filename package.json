@@ -24,6 +24,7 @@
     "@adonisjs/framework": "^5.0.4",
     "@adonisjs/ignitor": "^2.0.5",
     "@adonisjs/lucid": "^5.0.2",
+    "@adonisjs/validator": "^5.0.3",
     "@adonisjs/vow": "^1.0.15",
     "chai": "^4.1.2",
     "pg": "^7.4.1",

@@ -24,6 +24,7 @@ Route.post('auth', 'AuthController.login')
 Route.group(() => {
   Route.get('users', 'UserController.index')
   Route.post('users', 'UserController.store')
+    .validator('User/Store')
   Route.get('users/:id', 'UserController.show')
   Route.delete('users/:id', 'UserController.delete')
 })

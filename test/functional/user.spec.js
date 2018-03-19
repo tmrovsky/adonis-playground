@@ -37,3 +37,12 @@ test('store', async ({ client }) => {
 
   expect(await Hash.verify(payload.password, user.password)).to.equal(true)
 })
+
+test('store | prevents creating user with same email', async ({ client }) => {
+  const response = await client
+    .post('/users')
+    .send({ email: 'test@desmart.com', password: 'some-password' })
+    .end()
+
+  response.assertStatus(400)
+})
