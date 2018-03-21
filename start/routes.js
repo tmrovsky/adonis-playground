@@ -21,9 +21,12 @@ Route.get('/healthcheck', ({ request }) => {
 
 Route.post('auth', 'AuthController.login')
 
-Route.group(() => {
-  Route.get('users', 'UserController.index')
-  Route.post('users', 'UserController.store')
-    .validator('User/Store')
-})
+Route.resource('users', 'UserController')
+  .only(['store', 'index'])
+  .middleware(new Map([
+    [['users.index'], ['auth', 'role:admin']]
+  ]))
+  .validator(new Map([
+    [['users.store'], ['User/Store']]
+  ]))
 
