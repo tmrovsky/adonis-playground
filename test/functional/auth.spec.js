@@ -45,3 +45,12 @@ test('login | reject user not found', async ({ client }) => {
 
   response.assertStatus(401)
 })
+
+test('login | reject user with wrong password', async ({ client }) => {
+  const response = await client
+    .post('auth')
+    .send({ email: 'test@desmart.com', password: 'some-password' })
+    .end()
+
+  response.assertStatus(401)
+})
