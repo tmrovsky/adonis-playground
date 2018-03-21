@@ -54,3 +54,22 @@ test('login | reject user with wrong password', async ({ client }) => {
 
   response.assertStatus(401)
 })
+
+test('show | 200 authenticated user', async ({ client }) => {
+  const response = await client
+    .get('auth')
+    .loginVia(user, 'jwt')
+    .end()
+
+  response.assertStatus(200)
+
+  expect(response.body.email).to.equal('test@desmart.com')
+})
+
+test('show | 401 not authenticated user', async ({ client }) => {
+  const response = await client
+    .get('auth')
+    .end()
+
+  response.assertStatus(401)
+})

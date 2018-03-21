@@ -19,6 +19,10 @@ class AuthController {
 
     return auth.generate(user)
   }
+
+  show ({ auth }) {
+    return auth.getUser()
+  }
 }
 
 module.exports = AuthController

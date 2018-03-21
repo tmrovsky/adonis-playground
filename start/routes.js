@@ -19,6 +19,9 @@ Route.get('/healthcheck', ({ request }) => {
   return { status: 'App is working' }
 })
 
+Route.get('auth', 'AuthController.show')
+  .middleware(['auth'])
+
 Route.post('auth', 'AuthController.login')
 
 Route.resource('users', 'UserController')
