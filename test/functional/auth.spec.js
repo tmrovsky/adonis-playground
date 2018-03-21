@@ -2,6 +2,7 @@ const chai = require('chai')
 const uuidv4 = require('uuid/v4')
 const { expect } = chai
 
+const Database = use('Database')
 const User = use('App/Models/User')
 
 const { test, trait, before, after } = use('Test/Suite')('Auth')
@@ -10,6 +11,7 @@ trait('Test/ApiClient')
 trait('Auth/Client')
 
 let user
+let user2
 
 before(async () => {
   const userData = {
@@ -18,11 +20,19 @@ before(async () => {
     id: uuidv4()
   }
 
+  const user2Data = {
+    email: 'test2@desmart.com',
+    password: 'some-super-fancy-password',
+    id: uuidv4()
+  }
+
   user = await User.create(userData)
+  user2 = await User.create(user2Data)
 })
 
 after(async () => {
   await user.delete()
+  await user2.delete()
 })
 
 test('login', async ({ client }) => {
@@ -72,4 +82,36 @@ test('show | 401 not authenticated user', async ({ client }) => {
     .end()
 
   response.assertStatus(401)
+})
+
+test('update | 200 authenticated user', async ({ client }) => {
+  const response = await client
+    .patch('auth')
+    .send({ email: 'test+updated@desmart.com' })
+    .loginVia(user, 'jwt')
+    .end()
+
+  response.assertStatus(204)
+
+  const updatedUser = await Database.table('users').where({ email: 'test+updated@desmart.com' })
+  expect(updatedUser).to.not.be.empty
+})
+
+test('update | 401 not authenticated user', async ({ client }) => {
+  const response = await client
+    .patch('auth')
+    .send({ email: 'test@desmart.com' })
+    .end()
+
+  response.assertStatus(401)
+})
+
+test('update | 400 change email to existing', async ({ client }) => {
+  const response = await client
+    .patch('auth')
+    .send({ email: 'test2@desmart.com' })
+    .loginVia(user, 'jwt')
+    .end()
+
+  response.assertStatus(400)
 })

@@ -15,7 +15,7 @@
 
 const Route = use('Route')
 
-Route.get('/healthcheck', ({ request }) => {
+Route.get('/healthcheck', () => {
   return { status: 'App is working' }
 })
 
@@ -23,6 +23,7 @@ Route.get('auth', 'AuthController.show')
   .middleware(['auth'])
 
 Route.post('auth', 'AuthController.login')
+Route.patch('auth', 'AuthController.update')
 
 Route.resource('users', 'UserController')
   .only(['store', 'index'])

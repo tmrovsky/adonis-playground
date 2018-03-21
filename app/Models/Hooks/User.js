@@ -13,7 +13,11 @@ const UserHook = module.exports = {}
  *
  * @return {void}
  */
-UserHook.hashPassword = async (userInstance) => {
+UserHook.hashPassword = hashPassword
+
+UserHook.rehashPassword = hashPassword
+
+async function hashPassword (userInstance) {
   if (userInstance.password) {
     userInstance.password = await Hash.make(userInstance.password)
   }
