@@ -35,4 +35,5 @@ Route.resource('users', 'UserController')
   ]))
 
 Route.post('users/verify-email', 'UserController.verifyEmail')
+  .validator(['User/VerifyEmail'])
 
