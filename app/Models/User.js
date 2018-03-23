@@ -1,5 +1,8 @@
 'use strict'
 
+const uuidv4 = require('uuid/v4')
+const cryptoRandomString = require('crypto-random-string')
+
 const Model = use('Model')
 
 class User extends Model {
@@ -14,6 +17,22 @@ class User extends Model {
 
     this.addHook('beforeCreate', 'User.hashPassword')
     this.addHook('beforeUpdate', 'User.rehashPassword')
+  }
+
+  static fromRegistration (email, password) {
+    const user = new User()
+    user.merge({
+      email,
+      password,
+      id: uuidv4(),
+      verification_hash: this.generateHash()
+    })
+
+    return user
+  }
+
+  static generateHash () {
+    return cryptoRandomString(30)
   }
 
   /**

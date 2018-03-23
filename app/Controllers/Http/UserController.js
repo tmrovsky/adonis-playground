@@ -1,7 +1,5 @@
 const User = use('App/Models/User')
 
-const uuidv4 = require('uuid/v4')
-
 class UserController {
   async index ({ response }) {
     const users = await User.all()
@@ -11,8 +9,7 @@ class UserController {
 
   async store ({ request, response }) {
     const { email, password } = request.all()
-    const user = new User()
-    user.merge({ email, password, id: uuidv4() })
+    const user = User.fromRegistration(email, password)
     await user.save()
 
     return response.status(201).json(user)
