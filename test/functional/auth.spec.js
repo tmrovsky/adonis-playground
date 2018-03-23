@@ -17,13 +17,15 @@ before(async () => {
   const userData = {
     email: 'test@desmart.com',
     password: 'some-super-fancy-password',
-    id: uuidv4()
+    id: uuidv4(),
+    email_verified: true
   }
 
   const user2Data = {
     email: 'test2@desmart.com',
     password: 'some-super-fancy-password',
-    id: uuidv4()
+    id: uuidv4(),
+    email_verified: false
   }
 
   user = await User.create(userData)
@@ -60,6 +62,15 @@ test('login | reject user with wrong password', async ({ client }) => {
   const response = await client
     .post('auth')
     .send({ email: 'test@desmart.com', password: 'some-password' })
+    .end()
+
+  response.assertStatus(401)
+})
+
+test('login | reject user with non verified email', async ({ client }) => {
+  const response = await client
+    .post('auth')
+    .send({ email: 'test2@desmart.com', password: 'some-super-fancy-password' })
     .end()
 
   response.assertStatus(401)
@@ -109,7 +120,7 @@ test('update | 401 not authenticated user', async ({ client }) => {
 test('update | 400 change email to existing', async ({ client }) => {
   const response = await client
     .patch('auth')
-    .send({ email: 'test2@desmart.com' })
+    .send({ email: user2.email })
     .loginVia(user, 'jwt')
     .end()
 

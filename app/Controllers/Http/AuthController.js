@@ -1,6 +1,8 @@
 const AuthExceptions = require('@adonisjs/auth/src/Exceptions')
 const { ValidationException } = require('@adonisjs/validator/src/Exceptions')
 
+const UserNotVerifiedException = require('../../Exceptions/UserNotVerifiedException')
+
 const User = use('App/Models/User')
 const Hash = use('Hash')
 
@@ -16,6 +18,10 @@ class AuthController {
 
     if (!await Hash.verify(password, user.password)) {
       throw AuthExceptions.PasswordMisMatchException.invoke('Cannot verify user password', 'password', 'jwt')
+    }
+
+    if (!user.email_verified) {
+      throw UserNotVerifiedException.invoke('User did not verify email address')
     }
 
     return auth.generate(user)

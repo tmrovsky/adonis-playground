@@ -34,3 +34,5 @@ Route.resource('users', 'UserController')
     [['users.store'], ['User/Store']]
   ]))
 
+Route.post('users/verify-email', 'UserController.verifyEmail')
+
