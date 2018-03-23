@@ -1,6 +1,7 @@
 const chai = require('chai')
 const { expect } = chai
 const uuidv4 = require('uuid/v4')
+const cryptoRandomString = require('crypto-random-string')
 
 const Database = use('Database')
 const Hash = use('Hash')
@@ -16,7 +17,13 @@ let nonAdminUser
 
 before(async () => {
   adminUser = new User()
-  adminUser.merge({ id: uuidv4(), email: 'testadmin@desmart.com', password: 'some-password', is_admin: true })
+  adminUser.merge({
+    id: uuidv4(),
+    email: 'testadmin@desmart.com',
+    password: 'some-password',
+    is_admin: true,
+    verification_hash: cryptoRandomString(30)
+  })
   await adminUser.save()
 })
 
@@ -43,6 +50,7 @@ test('store', async ({ client }) => {
 
   expect(nonAdminUserData.email).to.equal(payload.email)
   expect(nonAdminUserData.password).not.to.equal(payload.password)
+  expect(nonAdminUserData).to.have.property('verification_hash')
 
   expect(await Hash.verify(payload.password, nonAdminUser.password)).to.equal(true)
 })
@@ -80,4 +88,43 @@ test('index | 401 not authenticated user', async ({ client }) => {
     .end()
 
   response.assertStatus(401)
+})
+
+test('verifyEmail', async ({ client }) => {
+  await client
+    .post('/users/verify-email')
+    .send({ hash: nonAdminUser.verification_hash })
+    .end()
+
+  const user = await User.find(nonAdminUser.id)
+
+  expect(user.email_verified).to.equal(true)
+  expect(user.verification_hash).to.equal(null)
+})
+
+test('verifyEmail | 400 if email already verified', async ({ client }) => {
+  const response = await client
+    .post('/users/verify-email')
+    .send({ hash: nonAdminUser.verification_hash })
+    .end()
+
+  response.assertStatus(400)
+})
+
+test('verifyEmail | 400 no hash in body', async ({ client }) => {
+  const response = await client
+    .post('/users/verify-email')
+    .send({ verification_hash: adminUser.verification_hash })
+    .end()
+
+  response.assertStatus(400)
+})
+
+test('verifyEmail | 400 wrong hash', async ({ client }) => {
+  const response = await client
+    .post('/users/verify-email')
+    .send({ hash: '123412341234' })
+    .end()
+
+  response.assertStatus(400)
 })
