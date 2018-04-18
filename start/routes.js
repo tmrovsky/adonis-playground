@@ -15,6 +15,25 @@
 
 const Route = use('Route')
 
-Route.get('/', ({ request }) => {
-  return { greeting: 'Hello world in JSON' }
+Route.get('/healthcheck', () => {
+  return { status: 'App is working' }
 })
+
+Route.get('auth', 'AuthController.show')
+  .middleware(['auth'])
+
+Route.post('auth', 'AuthController.login')
+Route.patch('auth', 'AuthController.update')
+
+Route.resource('users', 'UserController')
+  .only(['store', 'index'])
+  .middleware(new Map([
+    [['users.index'], ['auth', 'role:admin']]
+  ]))
+  .validator(new Map([
+    [['users.store'], ['User/Store']]
+  ]))
+
+Route.post('users/verify-email', 'UserController.verifyEmail')
+  .validator(['User/VerifyEmail'])
+

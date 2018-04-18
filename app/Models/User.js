@@ -1,19 +1,39 @@
 'use strict'
 
+const uuidv4 = require('uuid/v4')
+const cryptoRandomString = require('crypto-random-string')
+
 const Model = use('Model')
 
 class User extends Model {
+  static get hidden () {
+    return [
+      'password',
+      "verification_hash"
+    ]
+  }
+
   static boot () {
     super.boot()
 
-    /**
-     * A hook to hash the user password before saving
-     * it to the database.
-     *
-     * Look at `app/Models/Hooks/User.js` file to
-     * check the hashPassword method
-     */
     this.addHook('beforeCreate', 'User.hashPassword')
+    this.addHook('beforeUpdate', 'User.rehashPassword')
+  }
+
+  static fromRegistration (email, password) {
+    const user = new User()
+    user.merge({
+      email,
+      password,
+      id: uuidv4(),
+      verification_hash: this.generateHash()
+    })
+
+    return user
+  }
+
+  static generateHash () {
+    return cryptoRandomString(30)
   }
 
   /**
