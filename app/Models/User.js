@@ -1,9 +1,8 @@
 'use strict'
 
-const uuidv4 = require('uuid/v4')
 const cryptoRandomString = require('crypto-random-string')
 
-const Model = use('Model')
+const Model = require('./BaseModel')
 
 class User extends Model {
   static get hidden () {
@@ -25,7 +24,6 @@ class User extends Model {
     user.merge({
       email,
       password,
-      id: uuidv4(),
       verification_hash: this.generateHash()
     })
 
