@@ -16,8 +16,8 @@ class User extends Model {
   static boot () {
     super.boot()
 
-    this.addHook('beforeCreate', 'User.hashPassword')
-    this.addHook('beforeUpdate', 'User.rehashPassword')
+    this.addHook('beforeCreate', 'UserHook.hashPassword')
+    this.addHook('beforeUpdate', 'UserHook.rehashPassword')
   }
 
   static fromRegistration (email, password) {
