@@ -7,6 +7,7 @@ class CategorySchema extends Schema {
     this.create('categories', (table) => {
       table.uuid('id').primary()
       table.string('name').notNullable
+      table.timestamps()
     })
   }
 
