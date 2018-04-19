@@ -11,7 +11,6 @@ class Question extends Model {
     const model = new Question()
     model.merge({
       ...data,
-      answers: JSON.stringify(data.answers),
       category_id: category.id
     })
     return model
