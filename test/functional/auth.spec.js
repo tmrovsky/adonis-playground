@@ -1,5 +1,4 @@
 const chai = require('chai')
-const uuidv4 = require('uuid/v4')
 const { expect } = chai
 
 const Database = use('Database')
@@ -17,14 +16,12 @@ before(async () => {
   const userData = {
     email: 'test@desmart.com',
     password: 'some-super-fancy-password',
-    id: uuidv4(),
     email_verified: true
   }
 
   const user2Data = {
     email: 'test2@desmart.com',
     password: 'some-super-fancy-password',
-    id: uuidv4(),
     email_verified: false
   }
 

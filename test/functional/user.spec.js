@@ -1,6 +1,5 @@
 const chai = require('chai')
 const { expect } = chai
-const uuidv4 = require('uuid/v4')
 const cryptoRandomString = require('crypto-random-string')
 
 const Database = use('Database')
@@ -18,7 +17,6 @@ let nonAdminUser
 before(async () => {
   adminUser = new User()
   adminUser.merge({
-    id: uuidv4(),
     email: 'testadmin@desmart.com',
     password: 'some-password',
     is_admin: true,
